@@ -35,9 +35,9 @@ confint(earn_reg1, '(Intercept)', level=0.95)
 
 
 ## Obtain regression coefficients from earn_reg1 regression
-beta = coef(summary(earn_reg1))[, "Estimate"] 
+beta_hat = coef(summary(earn_reg1))[, "Estimate"] 
 # or 
-beta = earn_reg1$coefficients
+beta_hat = earn_reg1$coefficients
 # beta[1] is OLS estimate of intercept
 # beta[2] is OLS estimate of slope
 
@@ -47,21 +47,30 @@ se = coef(summary(earn_reg1))[, "Std. Error"]
 # se[2] is standard error of OLS estimate of slope
 
 ## Compute 95% CI of the regression slope coefficient by hand
-CI95_low=beta[2]-1.96*se[2]    # lower bound of 95% CI
-CI95_upp=beta[2]+1.96*se[2]    # upper bound of 95% CI
+qnorm(0.975)
+qnorm(0.025)
+CI95_low = beta_hat[2] - 1.96*se[2]    # lower bound of 95% CI
+CI95_upp = beta_hat[2] + 1.96*se[2]    # upper bound of 95% CI
 
 # ------------------------- Q2
+# var(100X) = 100^2 var(X)
+# se(100x) = sqrt( 100^2 var(X)) = 100 se(x)
 ## 95% CI for increasing height by 100cm on earnings
-CI95_low_100=100*(beta[2]-1.96*se[2])    # lower bound of 95% CI
-CI95_upp_100=100*(beta[2]+1.96*se[2])    # upper bound of 95% CI
+CI95_low_100 = 100 * (beta_hat[2]-1.96*se[2])    # lower bound of 95% CI
+CI95_upp_100 = 100 * (beta_hat[2]+1.96*se[2])    # upper bound of 95% CI
 paste("95% CI lower bound for 100cm increase in earnings is: ", CI95_low_100)
 paste("95% CI upper bound for 100cm increase in earnings is: ", CI95_upp_100)
 
 # ------------------------- Q3
+# 10cm -> 3000 income increase (measured in 10,000)
+# 10cm -> 0.3 income increase (in the data)
+# 1 cm -> 0.03 income increase
+
 ## t-statistic and p-value for null that slope=0.03
-tstat2=(beta[2]-0.03)/se[2]
+# H0: beta2 = 0.03 H1: beta2 not= 0.03
+(tstat2 = (beta_hat[2]-0.03)/se[2])
 (critical_value = qnorm(0.975)) # 5%; two tail.
-pval2=2*pnorm(-abs(tstat2))
+(pval2 = 2 * pnorm(-abs(tstat2)))
 paste("pvalue for 2-sided test of null that slope=0.03 is:", pval2)
 # Fail to reject null, p-value (pval2)=0.280
 
@@ -70,8 +79,10 @@ paste("pvalue for 2-sided test of null that slope=0.03 is:", pval2)
 #**********************************************************************************************
 # REGRESSION: HOMICIDES AND POLICE
 
+rm(list=ls()) # remove everything in the environment to start a new project
+
 ## Load dataset on income and height
-mydata2=read.csv(file="tute5_crime.csv")
+mydata2 = read.csv(file="tute5_crime.csv")
 
 ## Summary Statistics
 stargazer(mydata2, 
@@ -118,7 +129,7 @@ confint(crime_reg1, 'police', level=0.95)
 
 # ------------------------- Q4
 ## Construct re-scalled police independent variable in terms of 1000's of police
-mydata2$police_1000=mydata2$police/1000     # save the re-scaled police variable in mydata2
+mydata2$police_1000 = mydata2$police/1000     # save the re-scaled police variable in mydata2
 summary(mydata2)
 # Notice how with the summary statistics police_1000 now shows up with a mean of 
 # 3.066 (which means 3066 police on average) which has a similar scale as the mean 
