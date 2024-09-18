@@ -223,9 +223,14 @@ sprintf("95 CI lower bound for partial effect: %f", dahe_ci95L)
 sprintf("95 CI upper bound for partial effect: %f", dahe_ci95H)
 sprintf("Width of 95 CI for partial effect: %f", dahe_ciwidth)
 
-# trying the following:
-# b. age changes from 28 (newdata1) to 31 (newdata2): null is 3*age+177*age2=0 
-# c. age changes from 31 (newdata1) to 35 (newdata2): null is 4*age+264*age2=0 
+# try the following:
+# b. age changes from 28 (newdata1) to 31 (newdata2): 
+
+# why null is 3*age+177*age2=0 ? 
+
+# c. age changes from 31 (newdata1) to 35 (newdata2):
+
+# why null is 4*age+264*age2=0 ? 
 
 
 
