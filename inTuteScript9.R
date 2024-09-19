@@ -32,9 +32,9 @@ library(ggplot2)
 mydata1=read.csv(file="tute9_cps.csv")
 
 ## Create nonlinear terms for polynomial regressions
-mydata1$age2=mydata1$age*mydata1$age
-mydata1$age3=mydata1$age*mydata1$age*mydata1$age
-mydata1$age4=mydata1$age*mydata1$age*mydata1$age*mydata1$age
+mydata1$age2 = mydata1$age * mydata1$age
+mydata1$age3 = mydata1$age * mydata1$age * mydata1$age
+mydata1$age4 = mydata1$age * mydata1$age * mydata1$age * mydata1$age
 
 # ------------------ Q1 ------------------
 # VISUALIZE DATA
@@ -61,7 +61,7 @@ ggplot(mydata1, aes(y=ahe, x=age)) +                                    # Define
   scale_y_continuous(name="Average Household Earnings (1000s)", limits=c(0, 80),breaks=seq(0,80,10))  # y-axis title, limits, lines
 
 ## Nicer scatter plot for fitting quadratic function with the ggplot package
-## Cubic function of degree 2 specified on the line where it states "formula = y ~ poly(x,3)"
+## Cubic function of degree 3 specified on the line where it states "formula = y ~ poly(x,3)"
 ggplot(mydata1, aes(y=ahe, x=age)) +
   geom_point(alpha = .3) + 
   stat_smooth(method = "lm", formula = y ~ poly(x,3), col="blue") +     # Fit a polynomial of DEGREE 3 (CUBIC)
@@ -123,7 +123,7 @@ coeftest(reg3, vcov = vcovHC(reg3, "HC1"))
 linearHypothesis(reg3,c("age=0",
                         "age2=0",
                         "bachelor=0",
-                        "female=0"),vcov = vcovHC(reg3, "HC1"))
+                        "female=0"), vcov = vcovHC(reg3, "HC1"))
 
 
 
@@ -154,10 +154,10 @@ reg=lm(ahe~age+age2+bachelor+female,data=mydata1)
 # at the observation that you specified with the data.frame() command
 
 ## Construct dataframe for predicting ahe based on 'reg' model for age=25 
-newdata1=data.frame(age=25,age2=25*25,bachelor=1,female=1)
+newdata1=data.frame(age=25,age2=25*25,bachelor=0,female=1)
 
 ## Construct dataframe for predicting ahe based on 'reg' model for age=28 
-newdata2=data.frame(age=28,age2=28*28,bachelor=1,female=1)
+newdata2=data.frame(age=28,age2=28*28,bachelor=0,female=1)
 
 # Combining the one-observation datasets we just created, newdata1 and newdata2, 
 # we now use the predict() command to computed the predicted values of ahe using our estimated
@@ -176,18 +176,18 @@ ahe2=predict(reg, newdata=newdata2)
 (dahe=ahe2-ahe1)
 
 # b. age changes from 28 (newdata1) to 31 (newdata2)
-newdata1=data.frame(age=28,age2=28*28,bachelor=1,female=1)
-newdata2=data.frame(age=31,age2=31*31,bachelor=1,female=1)
+newdata1=data.frame(age=28,age2=28*28,bachelor=0,female=1)
+newdata2=data.frame(age=31,age2=31*31,bachelor=0,female=1)
 ahe1=predict(reg, newdata=newdata1)
 ahe2=predict(reg, newdata=newdata2)
-(dahe=ahe2-ahe1)
+(dahe2=ahe2-ahe1)
 
 # c. age changes from 31 (newdata1) to 35 (newdata2)
 newdata1=data.frame(age=31,age2=31*31,bachelor=1,female=1)
 newdata2=data.frame(age=35,age2=35*35,bachelor=1,female=1)
 ahe1=predict(reg, newdata=newdata1)
 ahe2=predict(reg, newdata=newdata2)
-(dahe=ahe2-ahe1)
+(dahe3=ahe2-ahe1)
 
 
 # ------------------ Q6 ------------------
@@ -200,8 +200,9 @@ ahe2=predict(reg, newdata=newdata2)
 # partial effect of the change in age from 25 to 28 on ahe 
 
 ## Fstatistic for the joint test of the null that dahe=0
-#  dahe = (28 age + 28^2 age2) - (25 age + 25^2 age2)
-#  dahe = 3 age + (28^2-25^2) age2
+#  dahe = (28 beta_ge + 28^2 beta_age2) - (25 beta_age + 25^2 beta_age2)
+#  dahe = 3 beta_age + (28^2-25^2) beta_age2
+#  dahe = 3 beta_age + (159) beta_age2
 Ftest=linearHypothesis(reg,c("3*age+159*age2=0"),vcov = vcovHC(reg, "HC1"))
 
 ## Recover the Fstat from the joint test results in Ftest
@@ -223,7 +224,7 @@ sprintf("95 CI lower bound for partial effect: %f", dahe_ci95L)
 sprintf("95 CI upper bound for partial effect: %f", dahe_ci95H)
 sprintf("Width of 95 CI for partial effect: %f", dahe_ciwidth)
 
-# try the following:
+# try the following: 
 # b. age changes from 28 (newdata1) to 31 (newdata2): 
 
 # why null is 3*age+177*age2=0 ? 
