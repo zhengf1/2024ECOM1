@@ -1,0 +1,17 @@
+(1): AHE = 0.648 Age + 7.773 Bachelor Degree + 3.977 Female
+          - 0.253 Female x Age + 0.292 year_dummy
+          + constant
+
+ d(ahe)/d(Age) = 0.648 - 0.253 Female
+ d(ahe)/d(female) = 3.977- 0.253 * Age
+ d(ahe)/d(Bachelor) = 7.773
+
+
+
+(2): AHE = 0.541 Age + 7.769 Bachelor Degree -3.56 Female
+          + 0.062 Female x Bachelor + 0.295 year_dummy
+          + constant
+
+ d(ahe)/d(Age) = 0.541
+ d(ahe)/d(Bachelor) = 7.769 + 0.062 Female
+ d(ahe)/d(female) = -3.56 + 0.062 Bachelor
